@@ -1,12 +1,34 @@
 from fastapi import APIRouter #responsavel para criar as rotas
 from fastapi.responses import JSONResponse #ajuda a enviar respostas pelo fastapi
+from src.main.composer.user_finder_componser import user_finder_componser
+from src.views.http_types.http_request import HttpRequest
+from src.main.composer.user_register_composer import user_register_componser
+from src.validators.users_register_validator import UserInput
 
 #*criando um conjunto de rotas
 users_routes = APIRouter(tags=["Usuários"])
 
+
 @users_routes.post('/users')
-async def criar_usuario():
+async def criar_usuario(body:UserInput):
+    http_request = HttpRequest(body=dict(body))
+    user_register = user_register_componser()
+
+    http_response = await user_register.handle_register_user(http_request)
+
     return JSONResponse(
-        content={"ola":"mundo"},
-        status_code=200
+        content=http_response.body,
+        status_code=http_response.status_code
+    )
+
+@users_routes.get('/users/{user_name}')
+async def buscar_usuarios_por_nome(user_name:str):
+    http_request = HttpRequest(path_params={"user_name": user_name})
+    user_finder = user_finder_componser()
+
+    http_response = await user_finder.handle_find_user_by_name(http_request)
+
+    return JSONResponse(
+        content = http_response.body,
+        status_code = http_response.status_code
     )
