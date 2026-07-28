@@ -1,5 +1,6 @@
 from .user_register import UserRegister
 import pytest
+from src.errors.types.http_bad_request_error import HttpBadRequestError
 
 class UserRepositoryMock:
     def __init__(self):
@@ -38,7 +39,7 @@ async def test_register_user_error_uf():
         "uf": "ES"
     }
 
-    with pytest.raises(Exception) as excinfo:
+    with pytest.raises(HttpBadRequestError) as excinfo:
         await user_register.register_user(invalid_uf_user_data)
 
     assert str(excinfo.value) == "Estado inválido para cadastro"
@@ -55,7 +56,7 @@ async def test_register_user_error_age():
         "uf": "CE"
     }
 
-    with pytest.raises(Exception) as excinfo:
+    with pytest.raises(HttpBadRequestError) as excinfo:
         await user_register.register_user(invalid_age_user_data)
 
     assert str(excinfo.value) == "idade invalida para cadastro"
