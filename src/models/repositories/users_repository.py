@@ -1,9 +1,9 @@
 from src.models.entities.users import Users
 from src.models.setting.database_connection_handler import DBConnectionHandler
 from sqlalchemy import insert, select
+from .interfaces.users_repository import UsersRepositoryInterface
 
-
-class UsersRepository:
+class UsersRepository(UsersRepositoryInterface):
     async def insert_users(self, user_infor: dict) -> None:
         async with DBConnectionHandler() as db:
             query = insert(Users).values(**user_infor)
